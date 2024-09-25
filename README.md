@@ -1,38 +1,71 @@
-# voyc
+Real-Time Voice Assistant with ChatGPT, AssemblyAI, and ElevenLabs
+This project is a real-time voice assistant that transcribes your speech, processes it using OpenAI's ChatGPT, and responds back using ElevenLabs' text-to-speech service. It leverages AssemblyAI for real-time speech recognition and provides an interactive conversational experience.
 
-### Voyc Chatbot
+Table of Contents
+Features
+Prerequisites
+Installation
+Configuration
+Usage
+Limitations
+Contributing
+License
+Acknowledgments
+Features
+Real-Time Speech Recognition: Uses AssemblyAI's WebSocket API to transcribe speech in real-time.
+Conversational AI: Integrates with OpenAI's GPT-3.5 Turbo model for generating responses.
+Text-to-Speech: Converts the AI's text responses into speech using ElevenLabs' API.
+Audio Playback: Plays the generated audio responses directly through your speakers.
+Prerequisites
+Python 3.7 or higher
+Microphone: For capturing real-time audio input.
+Speakers: For audio output.
+API Keys: You'll need API keys for the following services:
+AssemblyAI API Key
+OpenAI API Key
+ElevenLabs API Key
+Installation
+Clone the Repository
 
-#### Description
+bash
+Copy code
+git clone https://github.com/your_username/your_repository.git
+cd your_repository
+Create a Virtual Environment (Optional but Recommended)
 
-The Voyc Chatbot is an advanced voice-controlled chatbot that leverages real-time speech recognition and OpenAI's GPT-3.5 to deliver interactive conversational experiences. It utilizes a WebSocket connection to stream audio data for transcription, generates responses with GPT-3.5, and converts these responses to speech. This project is ideal for applications requiring hands-free interaction and natural language processing capabilities.
+bash
+Copy code
+python -m venv venv
+source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+Install Required Packages
 
-#### Key Features
+Install the dependencies listed in requirements.txt:
 
-- **Real-time Speech Recognition**: Utilizes AssemblyAI's WebSocket API for real-time speech-to-text conversion.
-- **AI-Driven Responses**: Integrates with OpenAI's GPT-3.5 for generating contextual and coherent responses based on user input.
-- **Text-to-Speech Conversion**: Converts the chatbot's responses back to speech using the ElevenLabs API.
-- **Interactive Audio Feedback**: Plays the generated speech audio to the user and waits for further input.
-- **Thread Management**: Uses multi-threading to handle real-time data streaming and processing.
+bash
+Copy code
+pip install -r requirements.txt
+Note: If you don't have a requirements.txt, you can install the packages individually:
 
-#### Dependencies
+bash
+Copy code
+pip install json websocket-client pyaudio numpy openai requests pygame sounddevice
+Additional Dependencies for Windows Users:
 
-The project requires the following dependencies:
-- `pyaudio`
-- `numpy`
-- `websocket-client`
-- `requests`
-- `pygame`
-- `sounddevice`
-- `openai`
-- `assemblyai`
+PyAudio: You may need to install PyAudio using a precompiled binary. Download the appropriate .whl file from PyAudio Downloads and install it using:
 
-#### Configuration
+bash
+Copy code
+pip install PyAudio‑<version>‑cp37‑cp37m‑win_amd64.whl
+Configuration
+Set Your API Keys
 
-Set your API keys and other configurations in the `CONFIG` dictionary within the script:
-```python
+Open the script file and locate the CONFIG dictionary. Replace the empty strings with your API keys:
+
+python
+Copy code
 CONFIG = {
-    "ASSEMBLY_API_KEY": "your_assembly_api_key",
-    "OPENAI_KEY": "your_openai_key",
+    "ASSEMBLY_API_KEY": "your_assemblyai_api_key",
+    "OPENAI_KEY": "your_openai_api_key",
     "ELEVENLABS_API_KEY": "your_elevenlabs_api_key",
     "FRAMES_PER_BUFFER": 3200,
     "DTYPE": np.int16,
@@ -40,39 +73,65 @@ CONFIG = {
     "SAMPLE_RATE": 16000,
     "OUTPUT_RATE": 44100
 }
-```
+Set Voice ID for ElevenLabs
 
-#### How It Works
+Replace the VOICE_ID in the text_to_speech function with the voice ID you wish to use from ElevenLabs:
 
-1. **Configuration**: API keys and other settings are configured in the `CONFIG` dictionary.
-2. **WebSocket Connection**: Establishes a WebSocket connection with AssemblyAI's real-time transcription service.
-3. **Audio Streaming**: Captures audio using PyAudio and streams it to the WebSocket server.
-4. **Message Handling**: Processes incoming messages from the WebSocket, extracting transcribed text and generating responses using GPT-3.5.
-5. **Response Playback**: Converts the GPT-3.5 response to audio and plays it back to the user.
-6. **Graceful Shutdown**: Handles SIGINT for a clean shutdown of the WebSocket connection and stops all threads.
+python
+Copy code
+VOICE_ID = 'your_elevenlabs_voice_id'
+You can find available voice IDs in your ElevenLabs account dashboard.
 
-#### Example Usage
+Usage
+Run the Script
 
-To start the chatbot, simply run the following command:
-```sh
-python voyc_chatbot.py
-```
-This will initiate the chatbot, which will listen for audio input, transcribe it, generate a response, and play the response back to you.
+bash
+Copy code
+python your_script_name.py
+Interact with the Assistant
 
-#### Detailed Script Explanation
+The assistant will start listening automatically.
+Speak into your microphone; your speech will be transcribed and sent to ChatGPT.
+The AI's response will be converted to speech and played back to you.
+The assistant waits for 5 seconds before listening again.
+Terminate the Program
 
-1. **Imports and Configurations**: The script begins by importing necessary libraries and setting up configuration parameters, including API keys and audio settings.
-2. **Audio Stream Setup**: Initializes PyAudio for capturing audio input.
-3. **WebSocket Handlers**: Defines functions for handling WebSocket messages (`on_message`), sending audio data (`send_data`), and managing the WebSocket connection (`on_open`).
-4. **GPT-3.5 Response Generation**: Implements the function `get_chatgpt_response` to communicate with the OpenAI API and generate responses based on transcribed text.
-5. **Text-to-Speech Conversion**: Uses the `text_to_speech` function to convert text responses to audio and plays the audio using `pygame`.
-6. **Root Mean Square (RMS) Calculation**: Calculates RMS to measure audio volume.
-7. **Main Execution**: Sets up the WebSocket connection, starts the audio stream, and handles graceful shutdown on interrupt signals.
+Press Ctrl + C to safely terminate the program.
+Limitations
+API Rate Limits: Be mindful of the rate limits imposed by AssemblyAI, OpenAI, and ElevenLabs.
+Audio Latency: There might be slight delays in processing due to network latency.
+Error Handling: The script includes basic error handling but may need enhancements for production use.
+Platform Compatibility: Tested primarily on Unix-based systems. Windows users may need additional configuration.
+Contributing
+Contributions are welcome! Please follow these steps:
 
-#### Future Enhancements
+Fork the repository.
 
-- Support for additional languages and dialects.
-- Improved error handling and reconnection logic for WebSocket communication.
-- Customizable voice options for text-to-speech conversion.
+Create a new branch:
 
-This project demonstrates the integration of several powerful APIs to create an interactive voice-controlled chatbot, leveraging real-time audio streaming and advanced natural language processing to provide an engaging user experience.
+bash
+Copy code
+git checkout -b feature/YourFeature
+Commit your changes:
+
+bash
+Copy code
+git commit -m "Add your message"
+Push to the branch:
+
+bash
+Copy code
+git push origin feature/YourFeature
+Open a Pull Request.
+
+License
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+Acknowledgments
+AssemblyAI for real-time speech recognition.
+OpenAI for the GPT-3.5 Turbo model.
+ElevenLabs for text-to-speech synthesis.
+Python Libraries:
+pyaudio and sounddevice for audio input/output.
+pygame for audio playback.
+websocket-client for WebSocket communication.
